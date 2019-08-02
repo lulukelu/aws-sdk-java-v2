@@ -69,6 +69,9 @@ builders provided for each command and offer most of the features
 available in the low-level DynamoDB SDK client.
 
    ```java
+   // CreateTable
+   customerTable.execute(CreateTable.create());
+   
    // GetItem
    Customer customer = customerTable.execute(GetItem.of(Key.of(stringValue("a123"))));
    
@@ -87,14 +90,11 @@ available in the low-level DynamoDB SDK client.
    // Scan
    Iterable<Page<Customer>> customers = customerTable.execute(Scan.create());
    
-   // CreateTable
-   customerTable.execute(CreateTable.create());
-   
    // BatchGetItem
-   batchResults = database.execute(BatchGetItem.of(ReadBatch.of(CUSTOMER_TABLE, GetItem.of(key1), GetItem.of(key2), GetItem.of(key3)));
+   batchResults = database.execute(BatchGetItem.of(ReadBatch.of(customerTable, GetItem.of(key1), GetItem.of(key2), GetItem.of(key3)));
    
    // BatchWriteItem
-   batchResults = database.execute(BatchWriteItem.of(WriteBatch.of(CUSTOMER_TABLE, PutItem.of(item), DeleteItem.of(key1), DeleteItem.of(key2))));
+   batchResults = database.execute(BatchWriteItem.of(WriteBatch.of(customerTable, PutItem.of(item), DeleteItem.of(key1), DeleteItem.of(key2))));
    
    // TransactGetItems
    transactResults = mappedDatabase.execute(TransactGetItems.of(ReadTransaction.of(customerTable, GetItem.of(key1)),
@@ -111,7 +111,7 @@ index. Here's an example of how to do this:
    ```
    MappedIndex<Customer> customersByName = customerTable.index("customers_by_name");
        
-   Iterable<Page<Customer>> customersWithName = customersByName.query(customerWithName);
+   Iterable<Page<Customer>> customersWithName = customersByName.query(equalTo(Key.of(stringValue("Smith"))));
    ```
 
 ### Using extensions
